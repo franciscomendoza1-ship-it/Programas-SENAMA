@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Programas SENAMA · Guía para personas mayores</title>
+<style>
+:root{--bg:#f7f5f0;--card:#fff;--ink:#1d2a33;--mute:#53636e;--brand:#0b5c7a;--brand-ink:#fff;--line:#d9d4c7;--chip:#e6f0f4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a1f;--card:#1b262d;--ink:#eef2f4;--mute:#a9b8c1;--brand:#6cc3e0;--brand-ink:#08222c;--line:#31414b;--chip:#243743}}
+:root[data-theme="dark"]{--bg:#121a1f;--card:#1b262d;--ink:#eef2f4;--mute:#a9b8c1;--brand:#6cc3e0;--brand-ink:#08222c;--line:#31414b;--chip:#243743}
+html{scroll-padding-top:env(safe-area-inset-top,0px);font-size:18px}
+html.big{font-size:22px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Segoe UI",system-ui,sans-serif;line-height:1.55}
+header{background:var(--brand);color:var(--brand-ink);padding:1.2rem 1rem;text-align:center}
+.w{max-width:1080px;margin:auto;padding:0 1rem}
+h1{margin:.2rem 0;font-size:1.6rem}
+header p{margin:.3rem 0 0}
+.tools{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0;justify-content:center}
+input[type=search]{flex:1 1 240px;max-width:520px;font-size:1rem;padding:.7rem .9rem;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+button{font:inherit;cursor:pointer;border:2px solid var(--brand);background:var(--card);color:var(--brand);border-radius:10px;padding:.55rem .9rem}
+button[aria-pressed=true],button.primary{background:var(--brand);color:var(--brand-ink)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;justify-content:center}
+.count{text-align:center;color:var(--mute);margin:0 0 1rem;font-size:.9rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));grid-auto-rows:1fr;gap:1rem;margin-bottom:2rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;height:100%}
+.ph{height:110px;flex:none;display:flex;align-items:center;justify-content:center;font-size:3.2rem}
+.cb{padding:1rem;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.6rem;flex:1}
+.cb h2{margin:0;font-size:1.1rem;min-height:2.7em;display:flex;align-items:center;justify-content:center;line-height:1.3}
+.tag{background:var(--chip);color:var(--brand);padding:.1rem .7rem;border-radius:99px;font-size:.8rem}
+.cb p{margin:0;color:var(--mute);font-size:.92rem;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;min-height:5.6em}
+.cb button{margin-top:auto;width:100%}
+dialog{width:min(820px,94vw);max-height:90vh;border:none;border-radius:16px;background:var(--card);color:var(--ink);padding:0}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+.dh{padding:1.2rem;text-align:center}
+.dh .ph{border-radius:12px;height:130px}
+.dh h3{font-size:1.4rem;margin:.8rem 0 .4rem}
+.boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem;margin:1rem 0;text-align:left;align-items:stretch}
+.box{border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem;background:var(--bg)}
+.box.full{grid-column:1/-1}
+.box h4{margin:0 0 .4rem;color:var(--brand);text-align:center;font-size:1rem;border-bottom:1px solid var(--line);padding-bottom:.4rem}
+.box p{margin:0;font-size:.95rem}
+.box ul{margin:0;padding-left:1.1rem;font-size:.95rem}
+.box li{margin-bottom:.25rem}
+.note{background:var(--chip);border-radius:10px;padding:.7rem 1rem;font-size:.9rem;margin:1rem 0;text-align:center}
+footer{border-top:1px solid var(--line);padding:1rem 0 2rem;color:var(--mute);font-size:.85rem;text-align:center}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid #f0a500;outline-offset:2px}
+</style>
+</head>
+<body>
+<header><div class="w">
+<h1>Programas del SENAMA</h1>
+<p>Servicio Nacional del Adulto Mayor · Chile. Encuentre en qué programa puede participar usted o su familia.</p>
+</div></header>
+<main class="w">
+<div class="tools">
+<input id="q" type="search" placeholder="Buscar: ej. cuidados, vivienda, talleres…" aria-label="Buscar programa">
+<button id="size" aria-pressed="false">Letra grande</button>
+</div>
+<div class="chips" id="chips" role="group" aria-label="Filtrar por categoría"></div>
+<p class="count" id="count"></p>
+<div class="grid" id="grid" aria-live="polite"></div>
+<div class="note">Esta guía es referencial. Requisitos, cupos y fechas de postulación cambian cada año y según la comuna: confirme siempre en <a href="https://www.senama.gob.cl" target="_blank" rel="noopener">senama.gob.cl</a>, en la oficina municipal del adulto mayor (OMAM) de su comuna, o llamando al 101 (ChileAtiende).</div>
+</main>
+<dialog id="dlg"></dialog>
+<footer><div class="w">Sitio informativo no oficial. Fuentes: SENAMA, ChileAtiende, DIPRES, Ministerio de Desarrollo Social y Familia. Revisado en octubre de 2026.</div></footer>
+
+<script>
+const P=[
+{n:"Fondo Nacional del Adulto Mayor (FNAM)",c:"Participación",e:"🤝",g:"#cfe8f0,#a6d3e3",
+o:"Financiar proyectos autogestionados de organizaciones de personas mayores para fortalecer su autonomía, participación e integración social. Es el principal fondo concursable de SENAMA.",
+k:["Concurso anual de proyectos","Financia talleres, actividades, equipamiento y mejoras de sedes","La organización administra y rinde cuenta de los recursos","Se postula con formularios y documentos de la organización"],
+r:["Organización de personas mayores con personalidad jurídica vigente","Directiva vigente e inscrita","Proyecto presentado dentro del período del concurso","Rendiciones al día de fondos anteriores, si corresponde"],
+b:"Clubes y organizaciones de personas mayores, y entidades que trabajan con ellas.",
+p:"Postula la organización (no la persona individual) en el portal de SENAMA durante la convocatoria anual.",
+d:"Pida ayuda a la dirección regional de SENAMA para armar el proyecto; las bases cambian cada año."},
+{n:"Programa Vínculos",c:"Apoyo social",e:"🏡",g:"#f4e3c4,#ecc98a",
+o:"Mejorar las condiciones de vida de personas mayores en situación de vulnerabilidad, conectándolas con redes comunitarias y servicios de protección social.",
+k:["Acompañamiento personalizado durante cerca de dos años","Visitas domiciliarias y trabajo conjunto con el municipio","Apoyo para acceder a beneficios del Estado","Opera solo en comunas seleccionadas"],
+r:["Tener 65 años o más","Situación de vulnerabilidad según Registro Social de Hogares","Vivir solo o con una persona más","Residir en una comuna donde opera el programa"],
+b:"Personas mayores en situación de pobreza o vulnerabilidad.",
+p:"Se accede por selección a través de la municipalidad. Consulte en la OMAM de su comuna.",
+d:"Mantenga su Registro Social de Hogares actualizado: es la base para ser considerado."},
+{n:"Cuidados Domiciliarios",c:"Cuidados",e:"🧑‍⚕️",g:"#d7ecd2,#b3d9ab",
+o:"Entregar apoyo y cuidados en el propio hogar a personas mayores con dependencia, y aliviar la carga de sus familias cuidadoras.",
+k:["Cuidadores/as visitan el domicilio","Apoyo en actividades básicas de la vida diaria","Asesoría y capacitación a la familia","Coordinación con la red de salud local"],
+r:["Tener 60 años o más","Presentar dependencia moderada o severa","Situación de vulnerabilidad socioeconómica","Residir en una comuna donde opera el programa"],
+b:"Personas mayores con dependencia y sus familias cuidadoras.",
+p:"Consulte en la municipalidad o en la dirección regional de SENAMA si el programa opera en su comuna.",
+d:"Lleve el carnet de la persona mayor y datos del cuidador principal al consultar."},
+{n:"Centros Diurnos del Adulto Mayor",c:"Cuidados",e:"☀️",g:"#fbe7a8,#f3d173",
+o:"Ofrecer atención socio-sanitaria durante el día, previniendo la dependencia y apoyando a las familias, mientras la persona sigue viviendo en su casa.",
+k:["Talleres de estimulación física y cognitiva","Actividades sociales, culturales y recreativas","Apoyo y orientación a la familia cuidadora","Funcionan en horario diurno, de lunes a viernes"],
+r:["Tener 60 años o más","Dependencia leve, deterioro cognitivo leve o depresión leve","Pertenecer a los tres primeros quintiles de vulnerabilidad","Evaluación del equipo del centro"],
+b:"Personas mayores con dependencia leve en situación de vulnerabilidad.",
+p:"Contacte el centro de su comuna o la OMAM para conocer cupos y evaluación de ingreso.",
+d:"Los cupos son limitados: consulte si existe lista de espera."},
+{n:"ELEAM y Fondo Subsidio ELEAM",c:"Cuidados",e:"🏥",g:"#e1d9f0,#c6b8e3",
+o:"Brindar residencia y cuidados integrales a personas mayores con dependencia que no pueden permanecer en su hogar. SENAMA fiscaliza estos establecimientos y subsidia a los que no tienen fines de lucro.",
+k:["Residencias de larga estadía","Cuidados socio-sanitarios permanentes","Subsidio a establecimientos sin fines de lucro","Registro regional de hogares autorizados"],
+r:["Tener 60 años o más","Presentar dependencia","Cumplir criterios de vulnerabilidad del programa","Evaluación socio-sanitaria previa"],
+b:"Personas mayores con dependencia y sin red de apoyo suficiente.",
+p:"Consulte plazas y listas de espera en la dirección regional de SENAMA o en la municipalidad.",
+d:"Antes de elegir un hogar, verifique que esté autorizado en el registro de SENAMA."},
+{n:"Condominios de Viviendas Tuteladas (CVT)",c:"Vivienda",e:"🏘️",g:"#cfe3e0,#a5cdc8",
+o:"Proveer vivienda y servicios de apoyo comunitario a personas mayores autovalentes en situación de vulnerabilidad.",
+k:["Viviendas pequeñas con áreas comunes","Apoyo de un monitor/a o coordinador/a","Vida comunitaria y autonomía","Acceso a actividades recreativas y de salud"],
+r:["Tener 60 años o más","Ser autovalente","Vulnerabilidad socioeconómica y de vivienda","Sin vivienda propia adecuada"],
+b:"Personas mayores autovalentes que no cuentan con vivienda adecuada.",
+p:"El ingreso se gestiona vía SENAMA y las entidades ejecutoras; consulte disponibilidad en su región.",
+d:"Hay pocos condominios en el país: pregunte por listas de espera y comunas con proyectos."},
+{n:"Programa Buen Trato al Adulto Mayor",c:"Derechos",e:"🛡️",g:"#f3d3d3,#e6aeae",
+o:"Promover el buen trato y prevenir y atender situaciones de maltrato, abuso o abandono hacia las personas mayores.",
+k:["Asesoría jurídica y psicosocial","Capacitaciones y campañas de sensibilización","Coordinación con la red de protección y tribunales","Orientación a familias y organizaciones"],
+r:["No hay requisito de ingreso para pedir orientación","Casos de maltrato o abandono pueden consultarse o denunciarse"],
+b:"Personas mayores, sus familias y organizaciones.",
+p:"Contacte la dirección regional de SENAMA.",
+d:"En caso de riesgo inmediato llame a Carabineros (133) o a la PDI (134)."},
+{n:"Envejecimiento Activo",c:"Participación",e:"🧘",g:"#fde0c8,#f7c19a",
+o:"Fomentar la actividad física, cultural y social para un envejecimiento positivo, con talleres y recreación en las comunas.",
+k:["Talleres de actividad física, memoria y manualidades","Turismo social y recreación","Se ejecuta con municipios y organizaciones","Oferta distinta en cada comuna"],
+r:["Tener 60 años o más","Participar en la actividad o convocatoria de su comuna"],
+b:"Personas mayores, individualmente o en organizaciones.",
+p:"Pregunte en la OMAM de su municipalidad qué actividades están disponibles.",
+d:"Muchas actividades se difunden por clubes de adultos mayores: súmese a uno cercano."},
+{n:"Voluntariado País de Mayores",c:"Participación",e:"🌱",g:"#d6edc9,#b0dc9b",
+o:"Promover que personas mayores aporten su experiencia como voluntarias en la comunidad, transmitiendo saberes a otras generaciones.",
+k:["Voluntariado en escuelas, jardines y organizaciones","Aprendizaje intergeneracional","Reconocimiento al aporte social","Participación en actividades comunitarias"],
+r:["Tener 60 años o más","Disposición de tiempo para participar","Inscripción en la convocatoria"],
+b:"Personas mayores autovalentes que desean ser voluntarias.",
+p:"Inscripción a través de SENAMA regional; verifique convocatorias vigentes.",
+d:"Puede combinarse con su participación en un club u organización."},
+{n:"Participación y Formación de Dirigentes Mayores",c:"Participación",e:"🎓",g:"#cdd9f2,#a9bde6",
+o:"Capacitar a dirigentes y dirigentas mayores para fortalecer la gestión y el liderazgo de sus organizaciones.",
+k:["Escuela de formación para dirigentes","Cursos presenciales y a distancia","Herramientas para gestionar y postular a fondos","Encuentros con otras organizaciones"],
+r:["Ser persona mayor dirigente o integrante de una organización","Inscribirse en la convocatoria"],
+b:"Dirigentes y socios de organizaciones de personas mayores.",
+p:"Siga las convocatorias en senama.gob.cl o consulte a su dirección regional.",
+d:"Es un buen paso previo para postular al Fondo Nacional del Adulto Mayor."},
+{n:"Comunas Amigables con las Personas Mayores",c:"Comunidad",e:"🏙️",g:"#d3e6f5,#a8cde8",
+o:"Apoyar a los municipios para que adapten sus servicios, espacios públicos y programas a las necesidades de las personas mayores, siguiendo el enfoque de ciudades amigables de la OMS.",
+k:["Diagnóstico participativo con personas mayores","Plan de acción comunal","Mejoras en accesibilidad, transporte y espacios públicos","Trabajo coordinado con el municipio"],
+r:["El municipio debe sumarse al programa","Participación de personas mayores de la comuna"],
+b:"Municipios y todas las personas mayores que viven en ellos.",
+p:"Consulte en su municipalidad o en SENAMA regional si la comuna participa.",
+d:"Las personas mayores pueden pedir a su municipio que se incorpore."},
+{n:"Concurso Literario Autobiográfico",c:"Cultura",e:"✍️",g:"#f2dcea,#e3b6d1",
+o:"Estimular que las personas mayores escriban y compartan sus historias de vida, valorando su memoria y su aporte cultural. En 2026 se realiza su XII edición.",
+k:["Relatos autobiográficos de personas mayores","Convocatoria anual con bases públicas","Selección y reconocimiento de los mejores relatos","Difusión de las historias"],
+r:["Tener 60 años o más","Presentar un relato original según las bases","Inscribirse dentro del plazo"],
+b:"Personas mayores de todo el país.",
+p:"Revise las bases y plazos en senama.gob.cl o en ChileAtiende.",
+d:"Puede pedir ayuda a un familiar o a su club para escribir o enviar el texto."},
+{n:"Registro de Prestadores de Servicios a Adultos Mayores",c:"Cuidados",e:"📋",g:"#dfe9cc,#c3d6a2",
+o:"Contar con un registro de personas y entidades que prestan servicios, remunerados o no, a personas mayores, para facilitar a las familias encontrar apoyo.",
+k:["Registro de cuidadores/as y otros prestadores","Incluye servicios remunerados y voluntarios","Ayuda a las familias a ubicar apoyos","Se tramita a través de ChileAtiende"],
+r:["Ser persona o entidad que presta servicios a personas mayores","Cumplir los antecedentes que pida el trámite"],
+b:"Prestadores de servicios y familias que buscan apoyo.",
+p:"Revise el trámite en ChileAtiende (chileatiende.gob.cl) o en senama.gob.cl.",
+d:"Pida siempre referencias antes de contratar a un cuidador."},
+{n:"Patrocinio para Actividades de Personas Mayores",c:"Cultura",e:"🏅",g:"#f5e6c0,#ebd08b",
+o:"Entregar respaldo institucional de SENAMA a actividades, encuentros y eventos organizados para personas mayores.",
+k:["Reconocimiento oficial de SENAMA a la actividad","Ayuda a difundir y dar validez al evento","Orientado a actividades sin fines de lucro","Se solicita antes de la actividad"],
+r:["Organización responsable de la actividad","Solicitud con descripción del evento","Actividad dirigida a personas mayores"],
+b:"Organizaciones e instituciones que realizan actividades para personas mayores.",
+p:"Trámite disponible en ChileAtiende y senama.gob.cl.",
+d:"Pida el patrocinio con anticipación y confirme si incluye financiamiento (en general es respaldo, no fondos)."}
+];
+const q=document.getElementById('q'),grid=document.getElementById('grid'),chips=document.getElementById('chips'),dlg=document.getElementById('dlg'),cnt=document.getElementById('count');
+let cat='Todos';
+const cats=['Todos',...new Set(P.map(p=>p.c))];
+chips.innerHTML=cats.map(c=>`<button aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join('');
+chips.onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=b.dataset.c;[...chips.children].forEach(x=>x.setAttribute('aria-pressed',x.dataset.c===cat));render()};
+const ph=p=>`<div class="ph" style="background:linear-gradient(135deg,${p.g})" role="img" aria-label="Ilustración: ${p.n}">${p.e}</div>`;
+const ul=a=>'<ul>'+a.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+const bx=(t,h,f)=>`<section class="box${f?' full':''}"><h4>${t}</h4>${h}</section>`;
+function render(){
+ const t=q.value.toLowerCase();
+ const l=P.map((p,i)=>({p,i})).filter(({p})=>(cat==='Todos'||p.c===cat)&&JSON.stringify(p).toLowerCase().includes(t));
+ cnt.textContent=l.length+' programa'+(l.length===1?'':'s')+' encontrado'+(l.length===1?'':'s');
+ grid.innerHTML=l.length?l.map(({p,i})=>`<article class="card">${ph(p)}<div class="cb"><span class="tag">${p.c}</span><h2>${p.n}</h2><p>${p.o}</p><button class="primary" data-i="${i}">Ver detalle</button></div></article>`).join(''):'<p>No encontramos programas con esa búsqueda.</p>';
+}
+grid.onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;const p=P[b.dataset.i];
+ dlg.innerHTML=`<div class="dh">${ph(p)}<h3>${p.n}</h3><span class="tag">${p.c}</span>
+ <div class="boxes">${bx('Objetivo','<p>'+p.o+'</p>',1)}${bx('Características',ul(p.k))}${bx('Requisitos',ul(p.r))}${bx('Beneficiarios','<p>'+p.b+'</p>')}${bx('Cómo acceder','<p>'+p.p+'</p>')}${bx('Dato útil','<p>'+p.d+'</p>',1)}</div>
+ <div class="note">Confirme requisitos y fechas en <a href="https://www.senama.gob.cl" target="_blank" rel="noopener">senama.gob.cl</a> o llame al 101.</div>
+ <button class="primary" onclick="dlg.close()">Cerrar</button></div>`;dlg.showModal()};
+q.oninput=render;
+document.getElementById('size').onclick=e=>{const on=document.documentElement.classList.toggle('big');e.target.setAttribute('aria-pressed',on)};
+render();
+</script>
+</body>
+</html>
